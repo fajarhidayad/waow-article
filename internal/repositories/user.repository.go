@@ -30,8 +30,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (u *userRepository) CreateUser(user *models.User) error {
-	err := u.db.Create(user).Error
-	return err
+	return u.db.Create(user).Error
 }
 
 func (u *userRepository) GetUsers() ([]*models.User, error) {

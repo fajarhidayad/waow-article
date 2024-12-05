@@ -17,7 +17,7 @@ const (
 	REFRESH_TOKEN_DURATION = time.Hour * 24 * 7
 )
 
-func GenerateToken(username, role string) (*TokenResponse, error) {
+func GenerateToken(id, username, role string) (*TokenResponse, error) {
 	var err error
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
@@ -25,6 +25,7 @@ func GenerateToken(username, role string) (*TokenResponse, error) {
 		"expires":  time.Now().Add(ACCESS_TOKEN_DURATION),
 	})
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub":     id,
 		"expires": time.Now().Add(REFRESH_TOKEN_DURATION),
 	})
 

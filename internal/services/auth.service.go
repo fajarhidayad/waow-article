@@ -12,8 +12,9 @@ import (
 )
 
 type AuthService interface {
-	Register(*dtos.RegisterDto) (*common.Response, error)
+	Register(*dtos.RegisterRequest) (*common.Response, error)
 	Login(*dtos.LoginDto) (*auth.TokenResponse, error)
+	GetUser(id string) (*models.User, error)
 }
 
 type authService struct {
@@ -26,14 +27,14 @@ func NewAuthService(userRepository repositories.UserRepository) AuthService {
 	}
 }
 
-func (service *authService) Register(user *dtos.RegisterDto) (*common.Response, error) {
-	username := service.userRepository.IsUsernameExist(user.Username)
-	if username {
+func (service *authService) Register(user *dtos.RegisterRequest) (*common.Response, error) {
+	usernameExist := service.userRepository.IsUsernameExist(user.Username)
+	if usernameExist {
 		return nil, errors.New("username already exist")
 	}
 
-	email := service.userRepository.IsEmailExist(user.Email)
-	if email {
+	emailExist := service.userRepository.IsEmailExist(user.Email)
+	if emailExist {
 		return nil, errors.New("email already exist")
 	}
 
@@ -80,10 +81,15 @@ func (service *authService) Login(req *dtos.LoginDto) (*auth.TokenResponse, erro
 		return nil, errors.New("Invalid credentials")
 	}
 
-	response, err := auth.GenerateToken(user.Username, user.Role)
+	response, err := auth.GenerateToken(user.ID, user.Username, user.Role)
 	if err != nil {
 		return nil, err
 	}
 
 	return response, nil
+}
+
+func (service *authService) GetUser(id string) (*models.User, error) {
+	user, err := service.userRepository.GetUserById(id)
+	return user, err
 }
