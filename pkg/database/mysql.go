@@ -29,7 +29,7 @@ func ConnectDBMySQL() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Category{}, &models.Article{})
 
 	fmt.Println("Database Connected")
 	return db

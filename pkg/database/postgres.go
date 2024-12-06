@@ -29,7 +29,10 @@ func ConnectDB() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&models.User{}, &models.Category{}, &models.Article{})
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println("Database Connected")
 	return db

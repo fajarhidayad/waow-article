@@ -28,11 +28,10 @@ import (
 
 //	@securityDefinitions.basic	JWT Auth
 
-//	@securityDefinitions.apikey	JWT Bearer Auth
-//	@in							header
-//	@name						Authorization
-//	@description				Bearer Token						Grants read and write access to administrative information
-
+// @securityDefinitions.apikey	JWT Bearer Auth
+// @in							header
+// @name						Authorization
+// @description				Bearer Token
 func main() {
 	r := gin.Default()
 	db := database.ConnectDB()
@@ -54,7 +53,7 @@ func main() {
 	{
 		routes.AuthRoutes(api, db)
 	}
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	PORT := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	err := r.Run(PORT)

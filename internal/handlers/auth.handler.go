@@ -57,8 +57,17 @@ func (handler *authHandler) Register(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
+// Login godoc
+// @Summary Sign in user
+// @Description Login a user, returns accessToken and RefreshToken
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user body dtos.LoginRequest true "Login User"
+// @Success 201 {object} auth.TokenResponse
+// @Router /auth/login [post]
 func (handler *authHandler) Login(ctx *gin.Context) {
-	var user dtos.LoginDto
+	var user dtos.LoginRequest
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, &common.ErrorResponse{
 			Error: err.Error(),

@@ -14,14 +14,14 @@ const (
 
 type User struct {
 	common.ModelsWithID
-	Username          string    `json:"username" gorm:"unique"`
-	Email             string    `json:"email" gorm:"unique"`
-	Password          string    `json:"password"`
-	DisplayName       string    `json:"display_name"`
+	Username          string    `json:"username" gorm:"unique;type:varchar(100)"`
+	Email             string    `json:"email" gorm:"unique;type:varchar(100)"`
+	Password          string    `json:"password" gorm:"type:varchar(100)"`
+	DisplayName       string    `json:"display_name" gorm:"type:varchar(255)"`
 	Bio               string    `json:"bio" gorm:"type:text"`
-	ProfilePictureURL string    `json:"profile_picture_url"`
+	ProfilePictureURL string    `json:"profile_picture_url" gorm:"type:varchar(255)"`
 	RegistrationDate  time.Time `json:"registration_date"`
-	Role              string    `json:"role"`
+	Role              string    `json:"role" gorm:"type:varchar(20)"`
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) error {

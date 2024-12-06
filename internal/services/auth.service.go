@@ -13,7 +13,7 @@ import (
 
 type AuthService interface {
 	Register(*dtos.RegisterRequest) (*common.Response, error)
-	Login(*dtos.LoginDto) (*auth.TokenResponse, error)
+	Login(*dtos.LoginRequest) (*auth.TokenResponse, error)
 	GetUser(id string) (*models.User, error)
 }
 
@@ -67,7 +67,7 @@ func (service *authService) Register(user *dtos.RegisterRequest) (*common.Respon
 	return response, nil
 }
 
-func (service *authService) Login(req *dtos.LoginDto) (*auth.TokenResponse, error) {
+func (service *authService) Login(req *dtos.LoginRequest) (*auth.TokenResponse, error) {
 	user, err := service.userRepository.GetUserByUsername(req.Username)
 	if err != nil {
 		if err.Error() == "Username not found" {

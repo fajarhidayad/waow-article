@@ -13,7 +13,7 @@ type RegisterRequest struct {
 	Role              string    `json:"role"`
 }
 
-type LoginDto struct {
+type LoginRequest struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }

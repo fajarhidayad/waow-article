@@ -1,10 +1,27 @@
 basePath: /api
 definitions:
+  auth.TokenResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
   common.Response:
     properties:
       data: {}
       message:
         type: string
+    type: object
+  dtos.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
   dtos.RegisterRequest:
     properties:
@@ -39,6 +56,28 @@ info:
   title: WAOW Article API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user, returns accessToken and RefreshToken
+      parameters:
+      - description: Login User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+      summary: Sign in user
+      tags:
+      - auth
   /auth/register:
     post:
       consumes:
@@ -65,8 +104,7 @@ securityDefinitions:
   JWT Auth:
     type: basic
   JWT Bearer Auth:
-    description: "Bearer Token\t\t\t\t\t\tGrants read and write access to administrative
-      information"
+    description: Bearer Token
     in: header
     name: Authorization
     type: apiKey
