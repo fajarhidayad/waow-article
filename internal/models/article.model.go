@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/fajarhidayad/waow-article/pkg/common"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type Article struct {
@@ -21,5 +22,7 @@ type Article struct {
 func (a *Article) BeforeCreate(db *gorm.DB) error {
 	a.GenerateUUID()
 	a.ViewCount = 0
+	a.Slug = strings.ToLower(a.Title)
+	a.Slug = strings.ReplaceAll(a.Slug, " ", "-")
 	return nil
 }

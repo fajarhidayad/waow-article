@@ -44,7 +44,7 @@ func (h *categoryHandlerImpl) Create(ctx *gin.Context) {
 }
 
 func (h *categoryHandlerImpl) Update(ctx *gin.Context) {
-	userId := ctx.Param("id")
+	catId := ctx.Param("id")
 
 	var category dtos.UpdateCategoryDto
 	if err := ctx.ShouldBindJSON(&category); err != nil {
@@ -53,7 +53,7 @@ func (h *categoryHandlerImpl) Update(ctx *gin.Context) {
 		})
 	}
 
-	res, err := h.categoryService.UpdateCategory(userId, &category)
+	res, err := h.categoryService.UpdateCategory(catId, &category)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
 		return
@@ -62,9 +62,9 @@ func (h *categoryHandlerImpl) Update(ctx *gin.Context) {
 }
 
 func (h *categoryHandlerImpl) Delete(ctx *gin.Context) {
-	userId := ctx.Param("id")
+	catId := ctx.Param("id")
 
-	res, err := h.categoryService.DeleteCategory(userId)
+	res, err := h.categoryService.DeleteCategory(catId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
 		return
@@ -84,9 +84,9 @@ func (h *categoryHandlerImpl) FindAll(ctx *gin.Context) {
 }
 
 func (h *categoryHandlerImpl) FindByID(ctx *gin.Context) {
-	userID := ctx.Param("id")
+	catId := ctx.Param("id")
 
-	res, err := h.categoryService.FindCategoryByID(userID)
+	res, err := h.categoryService.FindCategoryByID(catId)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, err)
 		return
