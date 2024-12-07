@@ -95,6 +95,7 @@ func (handler *authHandler) Refresh(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, common.ErrorResponse{
 			Error: err.Error(),
 		})
+		return
 	}
 
 	response, err := auth.GenerateToken(user.ID, user.Username, user.Role)
@@ -109,7 +110,7 @@ func (handler *authHandler) Refresh(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, common.Response{
 		Message: "Success",
-		Data:    "Token refreshed",
+		Data:    response,
 	})
 }
 

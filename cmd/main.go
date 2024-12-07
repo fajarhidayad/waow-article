@@ -53,6 +53,8 @@ func main() {
 	{
 		routes.AuthRoutes(api, db)
 		routes.AdminRoutes(api, db)
+		routes.CategoryRoutes(api, db)
+		routes.ArticleRoutes(api, db)
 	}
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

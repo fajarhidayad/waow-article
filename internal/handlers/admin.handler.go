@@ -72,11 +72,13 @@ func (h *adminHandlerImpl) UpdateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, common.ErrorResponse{
 			Error: err.Error(),
 		})
+		return
 	}
 
 	res, err := h.userService.UpdateUser(userID, &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
+		return
 	}
 
 	ctx.JSON(http.StatusOK, res)
