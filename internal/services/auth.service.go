@@ -51,7 +51,7 @@ func (service *authService) Register(user *dtos.RegisterRequest) (*common.Respon
 		Bio:               user.Bio,
 		ProfilePictureURL: user.ProfilePictureURL,
 		RegistrationDate:  user.RegistrationDate,
-		Role:              user.Role,
+		Role:              models.ROLE_USER,
 	}
 
 	err = service.userRepository.CreateUser(newUser)
@@ -70,15 +70,15 @@ func (service *authService) Register(user *dtos.RegisterRequest) (*common.Respon
 func (service *authService) Login(req *dtos.LoginRequest) (*auth.TokenResponse, error) {
 	user, err := service.userRepository.GetUserByUsername(req.Username)
 	if err != nil {
-		if err.Error() == "Username not found" {
-			return nil, errors.New("Invalid credentials")
+		if err.Error() == "username not found" {
+			return nil, errors.New("invalid credentials")
 		}
 		return nil, err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		return nil, errors.New("Invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
 
 	response, err := auth.GenerateToken(user.ID, user.Username, user.Role)

@@ -52,6 +52,7 @@ func main() {
 	api := r.Group("/api")
 	{
 		routes.AuthRoutes(api, db)
+		routes.AdminRoutes(api, db)
 	}
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

@@ -22,11 +22,11 @@ func GenerateToken(id, username, role string) (*TokenResponse, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 		"role":     role,
-		"expires":  time.Now().Add(ACCESS_TOKEN_DURATION),
+		"exp":      time.Now().Add(ACCESS_TOKEN_DURATION).Unix(),
 	})
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub":     id,
-		"expires": time.Now().Add(REFRESH_TOKEN_DURATION),
+		"sub": id,
+		"exp": time.Now().Add(REFRESH_TOKEN_DURATION).Unix(),
 	})
 
 	secretAccessToken := os.Getenv("SECRET_ACCESS_TOKEN")

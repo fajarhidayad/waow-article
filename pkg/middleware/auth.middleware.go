@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"github.com/fajarhidayad/waow-article/internal/models"
 	"net/http"
 	"os"
 	"strings"
@@ -13,12 +14,19 @@ import (
 
 func HasAccessToken() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		tokenString, err := ctx.Cookie("Authorization")
-		if err != nil || tokenString == "" {
+		//tokenString, err := ctx.Cookie("Authorization")
+		tokenString := ctx.GetHeader("Authorization")
+		if tokenString == "" {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, common.ErrorResponse{
 				Error: "Unauthorized",
 			})
 			return
+		}
+
+		if !strings.HasPrefix(tokenString, "Bearer ") {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, common.ErrorResponse{
+				Error: "Unauthorized",
+			})
 		}
 
 		tokenString = strings.Split(tokenString, " ")[1]
@@ -32,12 +40,15 @@ func HasAccessToken() gin.HandlerFunc {
 			return []byte(secret), nil
 		})
 
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, nil)
+		if err != nil || !token.Valid {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, &common.ErrorResponse{
+				Error: "invalid or expired token",
+			})
 			return
 		}
 
-		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if ok {
 			ctx.Set("username", claims["username"])
 			ctx.Set("role", claims["role"])
 		}
@@ -68,12 +79,52 @@ func HasRefreshToken() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, nil)
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, &common.ErrorResponse{
+				Error: err.Error(),
+			})
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
 			ctx.Set("sub", claims["sub"])
+		}
+
+		ctx.Next()
+	}
+}
+
+func HasRoleAdmin() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		role, exist := ctx.Get("role")
+		if !exist {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, common.ErrorResponse{
+				Error: "Unauthorized",
+			})
+		}
+
+		if role != models.ROLE_ADMIN {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, common.ErrorResponse{
+				Error: "Unauthorized",
+			})
+		}
+
+		ctx.Next()
+	}
+}
+
+func HasRoleUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		role, exist := ctx.Get("role")
+		if !exist {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, common.ErrorResponse{
+				Error: "Unauthorized",
+			})
+		}
+
+		if role != models.ROLE_USER {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, common.ErrorResponse{
+				Error: "Unauthorized",
+			})
 		}
 
 		ctx.Next()
